@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+
+# Git
+.git
+.gitignore
+
+# Development
+.env
+.env.*
+*.log
+
+# IDE
+.idea
+.vscode
+
+# Test files
+tests
+coverage
+*.test.js
+
+# Documentation
+*.md
+!README.md
+
+# Scripts (not needed at runtime)
+scripts
+
+# Certificates (mounted as secrets)
+certs/*.p12
+certs/*.pem
+certs/*.cer
+
+# Context directory
+.context

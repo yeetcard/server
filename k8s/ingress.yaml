@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: yeetcard-pass-service
+  namespace: yeetcard
+  labels:
+    app.kubernetes.io/name: yeetcard-pass-service
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: yeetcard-pass-service-ip
+    networking.gke.io/managed-certificates: yeetcard-pass-service-cert
+    kubernetes.io/ingress.class: gce
+spec:
+  rules:
+    - host: pass-api.yeetcard.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: yeetcard-pass-service
+                port:
+                  name: http
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: yeetcard-pass-service-cert
+  namespace: yeetcard
+spec:
+  domains:
+    - pass-api.yeetcard.example.com
