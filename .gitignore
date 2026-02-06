@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Certificates (never commit)
+certs/*.p12
+certs/*.pem
+certs/*.cer
+certs/*.key
+!certs/.gitkeep
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Test output
+*.pkpass
+test-output/
+
+# Temporary files
+tmp/
+temp/

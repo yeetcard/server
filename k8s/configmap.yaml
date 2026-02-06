@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: yeetcard-pass-service-config
+  namespace: yeetcard
+  labels:
+    app.kubernetes.io/name: yeetcard-pass-service
+data:
+  PORT: "3000"
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  RATE_LIMIT_REQUESTS: "100"
+  RATE_LIMIT_WINDOW_MS: "3600000"

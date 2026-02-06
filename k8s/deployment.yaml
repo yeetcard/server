@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yeetcard-pass-service
+  namespace: yeetcard
+  labels:
+    app.kubernetes.io/name: yeetcard-pass-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: yeetcard-pass-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: yeetcard-pass-service
+    spec:
+      serviceAccountName: yeetcard-pass-service
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+        - name: pass-service
+          image: gcr.io/PROJECT_ID/yeetcard-pass-service:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: yeetcard-pass-service-config
+            - secretRef:
+                name: yeetcard-pass-service-secrets
+          env:
+            - name: CERTIFICATE_PATH
+              value: "/app/certs/pass.p12"
+            - name: WWDR_CERTIFICATE_PATH
+              value: "/app/certs/AppleWWDRCA.pem"
+          volumeMounts:
+            - name: certificates
+              mountPath: /app/certs
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: certificates
+          secret:
+            secretName: yeetcard-certificates
+            items:
+              - key: pass.p12
+                path: pass.p12
+              - key: AppleWWDRCA.pem
+                path: AppleWWDRCA.pem
